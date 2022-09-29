@@ -1,3 +1,5 @@
+#from Game import Skip
+
 class Cards:
     def __init__(self, color="white", number=0 , special_ability=None):
         self.color = color
@@ -13,6 +15,15 @@ class Cards:
     
     
     def get_text(self):
-        if self.number == 0: return self.special_ability
+        if self.number == 0: 
+            return self.special_ability
         
-        else: return self.number
+        else: 
+            return self.number
+        
+    def reverse(self, game):
+        game.reverse()
+        
+    def skip(self, game):
+        game.skip()
+        
