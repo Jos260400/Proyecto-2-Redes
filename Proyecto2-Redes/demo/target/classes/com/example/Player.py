@@ -7,13 +7,20 @@ class Player():
         self.name = name
         self.cards = cards
         self.deck = create_all_cards()
+        self.ready = False
         
+    def connected(self):
+        return self.ready
         
     def cardsPrint(self):
         for cards in self.cards:
             #print(colored(cards.number, self.color))
             print(colored(cards.get_text(), cards.color))
             
+            
+    def playerStatus(self):
+        self.status = False
+        
     
     def promptCard(self, previousCard, game):
         if previousCard != None:
@@ -30,6 +37,8 @@ class Player():
             if card == "draw":
                 print("Getting a new card...")
                 self.drawCard()
+                
+            
             else:
                 print("Card not found or not valid: ")
             #print("Card not found or not valid...")
@@ -48,14 +57,28 @@ class Player():
                         game.reverse()
                     if c.special_ability == "skip":
                         game.skip()
+                        
+                    if c.special_ability == "+2":
+                        self.plus2Card()
+                    
+                    if c.special_ability == "+4":
+                        self.plus2Card()
+                    
                     return True
             else:
                 if str(c) == card:
                     if c.special_ability == "reverse":
-                        print("reversing the flow...")
                         game.reverse()
+                    
                     if c.special_ability == "skip":
                         game.skip()
+                    
+                    if c.special_ability == "+2":
+                        game.plus2Card()
+                        
+                    if c.special_ability == "+4":
+                        game.plus4Card()
+                        
                     return True
         return False
 
@@ -70,5 +93,26 @@ class Player():
     
     def drawCard(self):
         #print("Getting a new card...")
-        self.cards.append(self.deck[random.randint(0, len(self.deck) - 1)])
+        randomCard = self.deck[random.randint(0, len(self.deck) - 1)]
+        self.cards.append(randomCard)
         
+
+    def plus2Card(self):
+        for i in range(0,2):
+            #print(i)   
+            randomCards = self.deck[random.randint(0, len(self.deck) - 1)]
+            self.cards.append(randomCards)
+            print(colored(randomCards.get_text(), randomCards.color))
+            #print(self.cards.append(self.deck[random.randint(0, len(self.deck) - 1)]))
+            
+            
+    def plus4Card(self):
+        for i in range(0,4):
+            #print(i)
+            randomCards = self.deck[random.randint(0, len(self.deck) - 1)]
+            self.cards.append(randomCards)
+            print(colored(randomCards.get_text(), randomCards.color))
+            #self.cards.append(self.deck[random.randint(0, len(self.deck) - 1)])
+            #print(self.cards.append(self.deck[random.randint(0, len(self.deck) - 1)]))
+            
+            

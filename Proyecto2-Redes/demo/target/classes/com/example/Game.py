@@ -130,6 +130,65 @@ class Game:
              #else:
              #    return self.previousPlayer - 1
 
+    def plus2Card(self):
+        if self.previousPlayer == 1:
+            print("Player 3 will receive +2 cards")
+            self.player3.plus2Card()
+            #self.player2.self.cardsPrint()
+            
+        elif self.previousPlayer == 2:
+            print("Player 4 will receive +2 cards")
+            self.player4.plus2Card()
+            #self.player3.self.cardsPrint()
+            
+        elif self.previousPlayer == 3:
+            print("Player 1 will receive +2 cards")
+            self.player1.plus2Card()
+            #self.player4.self.cardsPrint()
+            
+        elif self.previousPlayer == 4:
+            print("Player 2 will receive +2 cards")
+            self.player2.plus2Card()
+            #self.player1.self.cardsPrint()
+            
+    def plus4Card(self):
+        if self.previousPlayer == 1:
+            print("Player 3 will receive +2 cards")
+            self.player3.plus4Card()
+            #self.player3.self.cardsPrint()
+            
+        elif self.previousPlayer == 2:
+            print("Player 4 will receive +2 cards")
+            self.player4.plus4Card()
+            
+            
+        elif self.previousPlayer == 3:
+            print("Player 1 will receive +2 cards")
+            self.player1.plus4Card()
+            
+        elif self.previousPlayer == 4:
+            print("Player 2 will receive +2 cards")
+            self.player2.plus4Card()
+            
+    def printPlayersDeck(self):
+        if self.previousPlayer == 1:
+            print("Player 2 deck is: ")
+            self.player2.cardsPrint()
+            #self.player3.self.cardsPrint()
+            
+        elif self.previousPlayer == 2:
+            print("Player 3 deck is: ")
+            self.player3.cardsPrint()
+            
+            
+        elif self.previousPlayer == 3:
+            print("Player 4 deck is: ")
+            self.player4.cardsPrint()
+            
+        elif self.previousPlayer == 4:
+            print("Player 1 deck is: ")
+            self.player1.cardsPrint()
+        
                 
     def player1Play(self):
         print ("Player 1, please make  your choice...")
@@ -138,7 +197,6 @@ class Game:
         #self.player1.cardsPrint()
         
         clear()
-        
         if self.previousPlayer == 4:
             self.previousPlayer = 1
     
@@ -167,8 +225,10 @@ class Game:
         self.player4.cardsPrint()
         self.previousCard = self.player4.promptCard(self.previousCard, self )
         #self.player4.cardsPrint()
-        clear()
         
+        clear()
         if self.previousPlayer == 3:
             self.previousPlayer = 4
+        
+        
         

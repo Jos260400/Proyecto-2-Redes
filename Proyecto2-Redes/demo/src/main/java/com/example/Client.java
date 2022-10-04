@@ -18,7 +18,7 @@ public class Client{
 		ObjectOutputStream oos = null;
 
 		for (int i = 0; i <5; i++){
-			socket = new Socket(host.getHostName(), 9876);
+			socket = new Socket("localhost", 5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 
 			System.out.println("Sending request to the server");
