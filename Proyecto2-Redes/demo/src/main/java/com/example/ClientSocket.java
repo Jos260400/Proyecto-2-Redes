@@ -18,15 +18,25 @@ import java.util.Scanner;
 public class ClientSocket {
     private static DataInputStream in;
     private static DataOutputStream out;
-    private Socket socket;
+    private static Socket socket;
     private BufferedReader bReader;
     private BufferedWriter bWriter;
     private String user;
+    
+    // public static void printMenu(){
+    //     System.out.println
+    //     (""" 
+    //         1. Login
+    //         2. Exit
+            
+    //     """);
+
+    // }
     //private boolean disconnected = true;
 
     public ClientSocket (Socket socket, String user){
         try{
-            this.socket = socket;
+            ClientSocket.socket = socket;
             this.bWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.user = user;
@@ -36,6 +46,23 @@ public class ClientSocket {
         }
 
     }
+
+    // public void disconnectClient()
+    // {
+    //     try{
+    //         socket.close();
+    //         System.out.println("Please enter a new port to connect to.");
+    //         Scanner scan = new Scanner(System.in);
+    //         int roomScan = scan.nextInt();
+    //         SocketAddress sAddress = new InetSocketAddress("192.168.0.8", roomScan);  
+    //         socket.connect(sAddress); 
+
+
+    //     }
+    //     catch(IOException e){
+    //         exiting(socket, bReader, bWriter);
+    //     }
+    // }
 
     public void sendMessage(){ 
         try{
@@ -52,7 +79,16 @@ public class ClientSocket {
                 if(sendMsg.contains("EXIT")){
                     System.out.println("BYE");
                     //disconnected = false;
+                    //disconnectClient();
+                    socket.close();
+
+                    System.out.println("Please enter a new port to connect to.");
+                    Scanner scan = new Scanner(System.in);
+                    int roomScan = scan.nextInt();
+                    SocketAddress sAddress = new InetSocketAddress("192.168.0.8", roomScan);  
+                    socket.connect(sAddress); 
                     break;
+                    
                     
                 }
                 bWriter.write(user + ": " + sendMsg);
@@ -86,6 +122,7 @@ public class ClientSocket {
             }
         }).start();
     }
+    
 
     public void exiting(Socket socket, BufferedReader bReader, BufferedWriter bWriter){
         try{
@@ -108,32 +145,22 @@ public class ClientSocket {
     public static void main(String[] args) throws UnknownHostException, IOException{
         //Socket socket = new Socket("localhost", 1234);
         boolean running = true;
-        int menu = 0;
-        Socket socket = new Socket();
+        int menu = 1;
+        socket = new Socket();
+
+
         do{ 
-            System.out.println(Server.nameList.size());
-            System.out.println("Please enter your username: ");
-            Scanner scanner = new Scanner (System.in);
-            String username = scanner.nextLine();
-            System.out.println(running);
             
-            if (Server.nameList.contains(username)){
-                System.out.println("Username already exists");
-
-            }
-            else{
-                Server.nameList.add(username);
-                System.out.println("Username added");
-                Server.nameList.size();
-            }
-
-            //Socket socket2 = new Socket("localhost", 4321);
-            /*  
-             * Menu: 
-             * Option 0: Login and getting the room information              
-             */
             switch(menu){
-                case 0: 
+            
+                case 1: 
+                    System.out.println(Server.nameList.size());
+
+                    System.out.println("Please enter your username: ");
+                    Scanner scanner = new Scanner (System.in);
+                    String username = scanner.nextLine();
+
+
                     System.out.println("Welcome to the UNO game socket implementation!" + username);
                     System.out.println(running);
                     /*
@@ -146,7 +173,8 @@ public class ClientSocket {
                     int room = Integer.parseInt(roomString);
                     
                     //TO DO: We need to get the the public ip address of the server...
-                    SocketAddress socketAddress = new InetSocketAddress("localhost", room);  
+                    SocketAddress socketAddress = new InetSocketAddress("192.168.0.8", room);  
+                    //socket.connect(socketAddress);
                     socket.connect(socketAddress);
                     ClientSocket client = new ClientSocket(socket, username);
                     
@@ -154,31 +182,13 @@ public class ClientSocket {
                     
                     client.listenMessage();
                     client.sendMessage();
+                    //client.disconnectClient();
 
-                    // in = new DataInputStream(System.in);
-                    // out = new DataOutputStream(socket.getOutputStream());
-
-                    // String msg = "";
-
-                    // while(!msg.equals("OVER")){
-                    //     try {
-                    //         msg = in.readLine();
-                    //         client.sendMessage();
-                    //     } catch (IOException i) {
-                    //         System.out.println(i);
-                    //     }
-                    // }
-                    
+                    //From here we will implement the actual UNO game...
+                                        
                 
 
                     break;                    
-
-                case 1:
-                    System.out.println("Bye!");
-                    in.close();
-                    out.close();
-                    socket.close();
-                    
 
                 default:
                     System.out.println("Please enter a valid menu item!");

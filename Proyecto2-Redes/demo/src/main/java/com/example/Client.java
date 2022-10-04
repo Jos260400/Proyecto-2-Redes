@@ -18,7 +18,7 @@ public class Client{
 		ObjectOutputStream oos = null;
 
 		for (int i = 0; i <5; i++){
-			socket = new Socket("localhost", 5000);
+			socket = new Socket("192.168.0.8", 1234);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 
 			System.out.println("Sending request to the server");

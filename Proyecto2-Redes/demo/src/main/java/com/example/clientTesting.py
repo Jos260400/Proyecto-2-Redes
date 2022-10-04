@@ -1,15 +1,106 @@
-import pickle
-import sys 
 import socket
+import sys
+import pickle
+# import packet
 
-HOST = "localhost" #Using localhost using the development of the client/server files, later it will be the heroku server ip
-PORT = 9876     # defaults to PORT = 9876
-
-#Ill be using SOCKET_STREAM to connect because TCP is a requirement for the project.
-#socket.SOCK_DGRAM is used for UDP connections.
-
-
-#The host will receive a tuple of (host, port) instead of just each value
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+from _thread import *
+from Game import Game
+from multiprocessing.connection import Listener
 
 
+server = socket.gethostbyname(socket.gethostname())
+port = 5000
+s = Listener((server, port))
+
+print("Waiting for a connection, Server Started")
+
+connected = set()
+games = dict()
+idCount = 0
+
+def client_thread(conn, p, gameId, games):
+
+	global idCount
+	conn.send(p) # send player number. No pickling needed
+	print("sending id")
+
+	reply = ""
+	#User can either send a move, or inform that they've drawn a card. 
+
+	while True:
+
+		try:
+			data = conn.recv()
+			print(data)
+
+			if gameId in games:
+				# Get game for this player
+				game = games[gameId]
+
+				if not data:
+					print("No data received")
+					break
+
+				else:
+
+					if data == "get":
+						reply = game
+						conn.send(reply)
+
+					if data == "move":
+						newMove = conn.recv()
+
+						# This is a move
+						move = newMove
+
+						# Move will be of type Class
+						game.play(p, move)
+
+						games[gameId] = game
+						reply = game
+						conn.send(reply)
+
+					if data == "draw":
+						game.draw(p)
+
+						games[gameId] = game
+						reply = game
+						conn.send(reply)
+
+					if data == "end":
+						game.endTurn()
+						games[gameId] = game
+
+						conn.send(game)
+
+			else:
+				print("No game ID found.")
+				break
+
+		except:
+			print("error")
+			break
+
+	try:
+		del games[gameId]
+	except:
+		pass
+	idCount -= 1
+	conn.close()
+
+
+while True:
+	conn = s.accept()
+
+	idCount += 1
+
+	p = 0
+	gameId = (idCount - 1)//2
+
+	if idCount % 2 == 1:
+		games[gameId] = Game(gameId)
+	else:
+		games[gameId].ready = True
+		p = 1
+
+	start_new_thread(client_thread, (conn, p, gameId, games))
